@@ -1,7 +1,9 @@
 # Elemental Lab Design QA
 
 - Source visual truth: `/Users/knight/.codex/generated_images/01a028ee-4301-73e0-9b54-4b1eb1d6d4b3/exec-1c3b7746-b1c1-4447-8e9d-c14c1c4511ef.png`
+- Latest responsive defect report: `/var/folders/wl/ktj0pyvd4_j_zc8v9hvvgl0h0000gn/T/TemporaryItems/NSIRD_screencaptureui_anty2R/Screenshot 2569-08-23 at 01.20.42.png`
 - Implementation screenshot: `/Users/knight/Development/IOT_Camp/Elemental_Ai/output/design-qa/implementation-final.png`
+- Compact desktop implementation evidence: `/Users/knight/Development/IOT_Camp/Elemental_Ai/output/design-qa/desktop-1280x720.png`
 - Full comparison: `/Users/knight/Development/IOT_Camp/Elemental_Ai/output/design-qa/comparison-final.png`
 - Responsive evidence: `/Users/knight/Development/IOT_Camp/Elemental_Ai/output/design-qa/implementation-mobile-final.png`
 - Monster roster evidence: `/Users/knight/Development/IOT_Camp/Elemental_Ai/output/design-qa/implementation-monsters-final.png`
@@ -9,6 +11,7 @@
 - Source pixels: 1487 x 1058; normalized to 1440 x 1024 for comparison
 - Implementation pixels: 1440 x 1024
 - State: round 2, Granite Golem, Thunder detected at 91%, demo camera preview
+- Current live state checked at `https://game.zentia.tech/`: randomized monster, camera/model disconnected, WAITING at 0%
 
 ## Full-view comparison evidence
 
@@ -90,12 +93,18 @@ Post-change evidence: `ultimate-asset-animation.png`. Browser verification cast 
 
 Static input-policy tests and the production build pass. Live pose verification still requires camera permission and a user-supplied Teachable Machine URL.
 
+### Iteration 8
+
+- P1: At Safari's approximately 1512 x 858 CSS viewport, the previous compact-desktop rules did not activate because they stopped at 800 px height. The spell rail crowded the mission prompt and the AI Sensor probability list could be clipped.
+- Expanded the compact-desktop height breakpoint to 920 px, constrained the AI panel with `min-height: 0` and hidden overflow, allowed the camera stage to flex down to 220 px, reduced probability-row height, and fixed the spell rail to 160 px.
+- Deployed the fix to `https://game.zentia.tech/` in commit `a377ab6`.
+
+Post-fix live browser evidence at 1280 x 720 CSS pixels: document scroll size exactly matched the viewport; the AI panel ended at y=558 and its Stone row ended at y=549; the spell rail occupied y=560–720; the mission prompt ended at y=546.84, leaving a visible gap before the rail. The Add AI Model modal opened and closed successfully. Console errors were empty; three TensorFlow backend-registration warnings remain non-blocking. The existing `desktop-1280x720.png` browser render verifies the same compact rule set visually.
+
 ## Interaction verification
 
-- Wrong Ice cast against Granite Golem: heart decreases and weakness guidance appears.
-- Correct Thunder cast: enemy HP decreases from 3420 to 2740 and score increases.
 - Connect Model modal: opens, exposes a labeled URL input, and browser URL validation works.
-- Demo controls: spell cards and keys 1–4 are functional.
+- Current production policy: spell cards, probability rows, and keys 1–4 do not cast; damage requires matching Teachable Machine output at 95–100% confidence.
 - Production build and Sites worker tests pass.
 - Direct camera startup was initiated; the in-app browser remained at its permission gate, so live pixels require the user to choose Allow and press START CAMERA again.
 
